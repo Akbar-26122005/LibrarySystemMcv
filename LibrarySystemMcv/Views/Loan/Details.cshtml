@@ -1,0 +1,110 @@
+﻿@model LibrarySystemMcv.Models.Loan
+
+@{
+    ViewBag.Title = "Loan details";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <hr />
+        <h4>Book</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.BookId)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.BookId)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Book.Title)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Book.Title)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Book.Author)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Book.Author)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Book.Year)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Book.Year)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Book.Quantity)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Book.Quantity)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Book.Available)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Book.Available)
+            </dd>
+        </dl>
+    </div>
+
+    <div class="col-md-6">
+        <hr />
+        <h4>Reader</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.ReaderId)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.ReaderId)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Reader.Name)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Reader.Name)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Reader.Phone)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Reader.Phone)
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.BorrowDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BorrowDate.ToString().Split(' ')[0])
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ReturnDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ReturnDate.ToString().Split(' ')[0])
+        </dd>
+    </dl>
+</div>
+
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
