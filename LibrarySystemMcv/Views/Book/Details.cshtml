@@ -4,7 +4,7 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Book details</h2>
+<h2>Детали про книгу</h2>
 
 <div>
     <hr />
@@ -52,15 +52,16 @@
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Редактировать", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Назад к списку", "Index")
 </p>
 
-<br />
-<h4>Loans</h4>
-<hr />
 
 @if (Model.Loans.Count > 0) {
+    <br />
+    <h4>Loans</h4>
+    <hr />
+
     <table class="table">
         <tr>
             <th>

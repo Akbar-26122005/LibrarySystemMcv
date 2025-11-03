@@ -1,0 +1,28 @@
+﻿{
+  "Books": [
+    {
+      "Id": 4,
+      "Title": "книга",
+      "Author": "автор",
+      "Year": 1999,
+      "Quantity": 333,
+      "Available": false
+    }
+  ],
+  "Readers": [
+    {
+      "Id": 3,
+      "Name": "reader",
+      "Phone": "phone"
+    }
+  ],
+  "Loans": [
+    {
+      "Id": 9,
+      "BookId": 4,
+      "ReaderId": 3,
+      "BorrowDate": "2025-11-03T06:32:22",
+      "ReturnDate": null
+    }
+  ]
+}

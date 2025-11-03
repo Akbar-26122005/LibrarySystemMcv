@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -15,6 +16,7 @@ namespace LibrarySystemMcv.Models {
         [Required]
         [StringLength(20)]
         public string Phone { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Loan> Loans { get; set; }
     }
 }

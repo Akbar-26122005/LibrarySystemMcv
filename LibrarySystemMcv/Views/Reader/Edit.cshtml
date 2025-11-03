@@ -1,10 +1,10 @@
 ﻿@model LibrarySystemMcv.Models.Reader
 
 @{
-    ViewBag.Title = "Edit reader";
+    ViewBag.Title = "Edit Reader";
 }
 
-<h2>@ViewBag.Title</h2>
+<h2>Редактирование читателя</h2>
 
 @using (Html.BeginForm("EditReader", null, FormMethod.Post))
 {
@@ -34,7 +34,7 @@
         <br />
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Сохранить" class="btn btn-primary" />
             </div>
         </div>
         <br />
@@ -42,5 +42,5 @@
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Назад к списку", "Index")
 </div>

@@ -28,34 +28,41 @@ namespace LibrarySystemMcv.Controllers
             return View(Context.Books.Find(id));
         }
 
-        public async Task<ActionResult> Delete(int id) {
+        public ActionResult Delete(int id) {
             Context.Books.Remove(Context.Books.Find(id));
-            await Context.SaveChangesAsync();
+            Context.SaveChanges();
+            TempData["Success"] = "Данные читателя были успешно удалены";
             return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CreateBook(Book model) {
+        public ActionResult CreateBook(Book model) {
             if (ModelState.IsValid) {
                 Context.Books.Add(model);
-                await Context.SaveChangesAsync();
+                Context.SaveChanges();
+                TempData["Success"] = "Данные читателя были успешно добавлены";
+                return RedirectToAction(nameof(Index));
             }
-            return RedirectToAction(nameof(Index));
+
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> EditBook(Book model) {
+        public ActionResult EditBook(Book model) {
             if (ModelState.IsValid) {
                 try {
                     Context.Entry(model).State = EntityState.Modified;
-                    await Context.SaveChangesAsync();
+                    Context.SaveChanges();
+                    TempData["Success"] = "Данные читателя были успешно изменены";
+                    return RedirectToAction(nameof(Index));
                 } catch (Exception ex) {
                     Debug.WriteLine(ex.Message);
                 }
             }
-            return RedirectToAction(nameof(Index));
+
+            return View(model);
         }
     }
 }
