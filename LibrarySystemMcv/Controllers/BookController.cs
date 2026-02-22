@@ -46,7 +46,7 @@ namespace LibrarySystemMcv.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateBook(Book model) {
+        public ActionResult Create(Book model) {
             if (ModelState.IsValid) {
                 Context.Books.Add(model);
                 Context.SaveChanges();
