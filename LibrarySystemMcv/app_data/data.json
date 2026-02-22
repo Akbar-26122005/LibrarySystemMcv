@@ -6,7 +6,15 @@
       "Author": "автор",
       "Year": 1999,
       "Quantity": 333,
-      "Available": false
+      "Available": true
+    },
+    {
+      "Id": 5,
+      "Title": "книга2",
+      "Author": "автор2",
+      "Year": 2000,
+      "Quantity": 334,
+      "Available": true
     }
   ],
   "Readers": [
@@ -14,6 +22,11 @@
       "Id": 3,
       "Name": "reader",
       "Phone": "phone"
+    },
+    {
+      "Id": 4,
+      "Name": "читатель2",
+      "Phone": "phone2"
     }
   ],
   "Loans": [
@@ -23,6 +36,20 @@
       "ReaderId": 3,
       "BorrowDate": "2025-11-03T06:32:22",
       "ReturnDate": null
+    },
+    {
+      "Id": 10,
+      "BookId": 5,
+      "ReaderId": 4,
+      "BorrowDate": "2025-11-03T06:57:12",
+      "ReturnDate": null
+    },
+    {
+      "Id": 11,
+      "BookId": 4,
+      "ReaderId": 4,
+      "BorrowDate": "2026-02-21T16:10:48",
+      "ReturnDate": "2022-01-01T00:00:00"
     }
   ]
 }

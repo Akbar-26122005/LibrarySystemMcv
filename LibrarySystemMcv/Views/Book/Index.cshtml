@@ -1,4 +1,4 @@
-﻿@model IEnumerable<LibrarySystemMcv.Models.Book>
+﻿@model LibrarySystemMcv.Models.ViewData<LibrarySystemMcv.Models.Book>
 
 @{
     ViewBag.Title = "Books";
@@ -6,52 +6,72 @@
 
 <h2>Книги</h2>
 
-<p>
-    @Html.ActionLink("Добавить", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Title)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Author)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Year)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Quantity)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Available)
-        </th>
-        <th></th>
-    </tr>
+@if (Model.Data.Count() > 0) {
+    <p>
+        @Html.ActionLink("Добавить", "Create")
+    </p>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Title)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Author)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Year)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Quantity)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Available)
-        </td>
-        <td>
-            @Html.ActionLink("Редактировать", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Детали", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Удалить", "Delete", new { id=item.Id })
-        </td>
-    </tr>
+    using (Html.BeginForm("ApplyFilters", null, FormMethod.Post, new { @class = "d-flex gap-4" })) {
+        @Html.AntiForgeryToken()
+        @Html.EditorFor(model => model.SearchSubstring, new { htmlAttributes = new { @class = "form-control", placeholder = "Поиск" } })
+        <input type="submit" value="Применить" class="btn btn-outline-success" />
+        if (Model.Filtered) {
+            <a href="/Book/DropFilters" class="btn btn-outline-danger">
+                <div class="btn-close"></div>
+            </a>
+        }
+    }
+    <br />
+
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Data[0].Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Data[0].Author)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Data[0].Year)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Data[0].Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Data[0].Available)
+            </th>
+            <th></th>
+        </tr>
+
+    @foreach (var item in Model.GetData()) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Author)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Year)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Available)
+            </td>
+            <td>
+                @Html.ActionLink("Редактировать", "Edit", new { id=item.Id }) |
+                @Html.ActionLink("Детали", "Details", new { id=item.Id }) |
+                @Html.ActionLink("Удалить", "Delete", new { id=item.Id })
+            </td>
+        </tr>
+    }
+
+    </table>
+} else {
+    <div class="alert alert-info">
+        В базе данных нет книг. Хотите 
+        @Html.ActionLink("создать", "Create")
+    </div>
 }
-
-</table>

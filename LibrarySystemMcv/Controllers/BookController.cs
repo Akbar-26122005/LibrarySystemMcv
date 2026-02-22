@@ -12,8 +12,17 @@ using System.Web.Mvc;
 namespace LibrarySystemMcv.Controllers
 {
     public class BookController : BaseController {
+        private static ViewData<Book> _viewData;
+
+        public BookController(): base() {
+            _viewData = new ViewData<Book>();
+            _viewData.TryInit(() => Context.Books.ToList());
+            _viewData.Update();
+        }
+
         public ActionResult Index() {
-            return View(Context.Books.ToList());
+            _viewData.Update();
+            return View(_viewData);
         }
 
         public ActionResult Create() {
@@ -63,6 +72,20 @@ namespace LibrarySystemMcv.Controllers
             }
 
             return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ApplyFilters(ViewData<Book> data) {
+            _viewData.SearchSubstring = data.SearchSubstring;
+            _viewData.ApplyChanges();
+            return View(nameof(Index), _viewData);
+        }
+
+        [HttpGet]
+        public ActionResult DropFilters() {
+            _viewData.ClearFilters();
+            return RedirectToAction(nameof(Index));
         }
     }
 }
