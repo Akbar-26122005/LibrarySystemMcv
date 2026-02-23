@@ -1,17 +1,23 @@
-﻿using System;
+﻿using LibrarySystemMcv.Utils;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Web;
-using LibrarySystemMcv.Utils;
+using System.Web.Mvc;
+using System.Web.Services.Description;
+using System.Web.Helpers;
 
 namespace LibrarySystemMcv.Models {
     public class ViewData<T> {
         public List<T> Data { get; set; }
         public Predicate<T> FilterCondition { get; set; }
 
-        private Func<T, object> _sortSelector { get; set; }
-        private bool _isAscending = true;
+        public string SortSelector { get; set; }
+        public string SortType { get; set; }
 
         public string SearchSubstring { get; set; }
         public bool Filtered { get; set; } = false;
@@ -20,51 +26,75 @@ namespace LibrarySystemMcv.Models {
         public delegate List<T> UpdatingData();
         private UpdatingData _updateData;
 
+        public List<SelectListItem> SortSelectors { get; set; }
+        public List<SelectListItem> SortTypes { get; set; }
+
         public ViewData() {
             Data = new List<T>();
-        }
 
-        public void Update() {
-            if (_updateData != null) {
-                Data = _updateData();
-                var newData = _updateData();
-                if (newData != null) {
-                    Data = newData;
-                    Debug.WriteLine($"Data обновлен. Элементов: {Data.Count}");
-                }
-            }
+            // Список для dropdown-выбора свойства для сортировки
+            //SortSelectors = new List<SelectListItem>();
+
+            //foreach (var item in typeof(T).GetProperties()) {
+            //    var customName = item.GetCustomAttribute<DisplayAttribute>()?.Name ?? null;
+            //    if (!string.IsNullOrEmpty(customName)) {
+            //        SortSelectors.Add(new SelectListItem {
+            //            Text = customName,
+            //            Value = item.Name
+            //        });
+            //    }
+            //}
+            SortSelectors = typeof(T).GetProperties()
+                .Where(p => !string.IsNullOrEmpty(p.GetCustomAttribute<DisplayAttribute>()?.Name))
+                .Select(p => new SelectListItem { Value = p.Name, Text = p.GetCustomAttribute<DisplayAttribute>().Name })
+                .ToList();
+
+            SortSelectors[0] = new SelectListItem { Text = "Сортировка", Disabled = true, Selected = true };
+
+            // Список для выбора типа сортировки
+            SortTypes = new List<SelectListItem> {
+                new SelectListItem { Text = "Тип сортировки", Disabled = true, Selected = true },
+                new SelectListItem { Text = "По возростанию", Value = "ascending" },
+                new SelectListItem { Text = "По убыванию", Value = "descending" }
+            };
         }
 
         public void TryInit(UpdatingData updatingData) {
             _updateData = updatingData;
         }
 
+        public void UpdateData() {
+            if (_updateData != null) {
+                Data = _updateData();
+                var newData = _updateData();
+                if (newData != null) {
+                    Data = newData;
+                }
+            }
+        }
+
+
         public void ClearFilters() {
             SearchSubstring = null;
             FilterCondition = null;
-            _sortSelector = null;
+            SortSelector = null;
             Filtered = false;
             FilteredData = null;
-            Update();
-        }
-
-        public void SetSortCondition<TProperty>(Func<T, TProperty> sortSelector, bool ascending = true) {
-            _sortSelector = item => (object)sortSelector(item);
-            _isAscending = ascending;
+            UpdateData();
         }
 
         public List<T> GetData() => FilteredData ?? Data;
 
-        public List<T> GetFinalData() {
-            Update();
+        public List<T> GetFilteredData() {
+            UpdateData();
             var finalData = new List<T>(Data);
 
             if (FilterCondition != null) {
                 finalData = Functions.Filter(finalData, FilterCondition);
             }
             
-            if (_sortSelector != null) {
-                finalData = Functions.SortByProperty(finalData, _sortSelector);
+            if (!string.IsNullOrEmpty(SortSelector)) {
+                finalData = Functions.SortByProperty(finalData, CreateGetterFast(SortSelector), SortType == "ascending" ? SortDirection.Ascending : SortDirection.Descending);
             }
             
             if (!string.IsNullOrEmpty(SearchSubstring)) {
@@ -76,7 +106,26 @@ namespace LibrarySystemMcv.Models {
 
         public void ApplyChanges() {
             Filtered = true;
-            FilteredData = GetFinalData();
+            FilteredData = GetFilteredData();
+        }
+
+        public void Set(ViewData<T> data) {
+            SearchSubstring = data.SearchSubstring;
+            SortSelector = data.SortSelector;
+            SortType = data.SortType;
+        }
+
+        public Func<T, object> CreateGetterFast(string selector) {
+            var property = typeof(T).GetProperties().FirstOrDefault(p => p.Name == selector);
+
+            if (!property.CanRead)
+                throw new ArgumentException("Property must have a getter");
+
+            var parameter = Expression.Parameter(typeof(T), "x");
+            var propertyAccess = Expression.Property(parameter, property);
+            var convertToObject = Expression.Convert(propertyAccess, typeof(object));
+            var lambda = Expression.Lambda<Func<T, object>>(convertToObject, parameter);
+            return lambda.Compile();
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Helpers;
 using System.Reflection;
 using System.Diagnostics;
+using System.ComponentModel.DataAnnotations;
 
 namespace LibrarySystemMcv.Utils {
     public static class Functions {
@@ -25,42 +26,28 @@ namespace LibrarySystemMcv.Utils {
         }
 
         public static List<T> SearchBySubstring<T>(List<T> data, string substring) {
-            //if (string.IsNullOrEmpty(substring)) {
-            //    return data;
-            //}
+            if (data == null)
+                throw new ArgumentNullException(nameof(data));
+            if (string.IsNullOrEmpty(substring))
+                return new List<T>(data);
 
-            //return data.Where(item =>
-            //    typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
-            //        .Where(p => p.PropertyType == typeof(string))
-            //        .Any(p => {
-            //            var value = p.GetValue(item)?.ToString();
-            //            return !string.IsNullOrEmpty(value) &&
-            //                value.IndexOf(substring, StringComparison.OrdinalIgnoreCase) >= 0;
-            //        })
-            //).ToList();
-            Debug.WriteLine($"inputed substring: {substring}");
-            if (string.IsNullOrEmpty(substring)) return data;
+            var stringProperties = typeof(T)
+                .GetProperties()
+                .Where(p => p.PropertyType == typeof(string) && p.CanRead)
+                .ToArray();
 
-            var filteredData = new List<T>();
-            var i = 0;
-
-            data.ForEach(p => {
-                var fullData = "";
-                foreach (var property in typeof(T).GetProperties()) {
-                    fullData += property.GetValue(p).ToString();
-                }
-                if (fullData.ToLower().Contains(substring.ToLower())) {
-                    filteredData.Add(p);
-                    Debug.WriteLine($"full data: {fullData}");
-                }
-                i++;
-            });
-
-            Debug.WriteLine($"iter-s: {i}");
-            Debug.WriteLine($"data count: {data.Count()}");
-            Debug.WriteLine($"filtered data count: {filteredData.Count()}");
-
-            return filteredData;
+            return data
+                .Where(item => item != null &&
+                    stringProperties.Any(prop => {
+                        try {
+                            var value = prop.GetValue(item) as string;
+                            return !string.IsNullOrEmpty(value) &&
+                        value.IndexOf(substring, StringComparison.OrdinalIgnoreCase) >= 0;
+                        } catch {
+                            return false;
+                        }
+                    }))
+                .ToList();
         }
     }
 }

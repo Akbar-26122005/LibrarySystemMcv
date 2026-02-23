@@ -15,6 +15,9 @@
         @Html.AntiForgeryToken()
         @Html.EditorFor(model => model.SearchSubstring, new { htmlAttributes = new { @class = "form-control", placeholder = "Поиск" } })
 
+        @Html.DropDownListFor(model => model.SortSelector, Model.SortSelectors, null, htmlAttributes: new { @class = "form-control" })
+        @Html.DropDownListFor(model => model.SortType, Model.SortTypes, null, htmlAttributes: new { @class = "form-control " })
+
         <input type="submit" value="Применить" class="btn btn-outline-success" />
 
         if (Model.Filtered) {
@@ -44,13 +47,17 @@
                 @Html.DisplayFor(modelItem => item.Phone)
             </td>
             <td>
-                @Html.ActionLink("Редактировать", "Edit", new { id=item.Id }) |
-                @Html.ActionLink("Детали", "Details", new { id=item.Id }) |
-                @Html.ActionLink("Удалить", "Delete", new { id=item.Id })
+                @Html.ActionLink("Редактировать", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Детали", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Удалить", "Delete", new { id = item.Id })
             </td>
         </tr>
     }
 
     </table>
+} else {
+    <div class="alert alert-info">
+        В базе данных нет читателей. Хотите
+        @Html.ActionLink("создать", "Create")
+    </div>
 }
-

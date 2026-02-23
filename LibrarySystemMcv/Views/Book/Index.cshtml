@@ -14,7 +14,12 @@
     using (Html.BeginForm("ApplyFilters", null, FormMethod.Post, new { @class = "d-flex gap-4" })) {
         @Html.AntiForgeryToken()
         @Html.EditorFor(model => model.SearchSubstring, new { htmlAttributes = new { @class = "form-control", placeholder = "Поиск" } })
+
+        @Html.DropDownListFor(model => model.SortSelector, Model.SortSelectors, null, htmlAttributes: new { @class = "form-control" })
+        @Html.DropDownListFor(model => model.SortType, Model.SortTypes, null, htmlAttributes: new { @class = "form-control" })
+
         <input type="submit" value="Применить" class="btn btn-outline-success" />
+
         if (Model.Filtered) {
             <a href="/Book/DropFilters" class="btn btn-outline-danger">
                 <div class="btn-close"></div>

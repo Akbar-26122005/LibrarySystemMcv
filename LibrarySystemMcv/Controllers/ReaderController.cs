@@ -16,11 +16,11 @@ namespace LibrarySystemMcv.Controllers
         public ReaderController(): base() {
             _viewData = new ViewData<Reader>();
             _viewData.TryInit(() => Context.Readers.ToList());
-            _viewData.Update();
+            _viewData.UpdateData();
         }
 
         public ActionResult Index() {
-            _viewData.Update();
+            _viewData.UpdateData();
             return View(_viewData);
         }
 
@@ -76,7 +76,7 @@ namespace LibrarySystemMcv.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult ApplyFilters(ViewData<Reader> data) {
-            _viewData.SearchSubstring = data.SearchSubstring;
+            _viewData.Set(data);
             _viewData.ApplyChanges();
             return View(nameof(Index), _viewData);
         }

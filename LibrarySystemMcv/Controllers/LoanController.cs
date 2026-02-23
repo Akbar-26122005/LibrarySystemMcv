@@ -12,8 +12,17 @@ using System.Net;
 namespace LibrarySystemMcv.Controllers
 {
     public class LoanController : BaseController {
+        private static ViewData<Loan> _viewData;
+
+        public LoanController(): base() {
+            _viewData = new ViewData<Loan>();
+            _viewData.TryInit(() => Context.Loans.ToList());
+            _viewData.UpdateData();
+        }
+
         public ActionResult Index() {
-            return View(Context.Loans);
+            _viewData.UpdateData();
+            return View(_viewData);
         }
 
         public void PopulateDropdowns(LoanViewModel model) {
@@ -115,6 +124,20 @@ namespace LibrarySystemMcv.Controllers
 
             PopulateDropdowns(model);
             return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ApplyFilters(ViewData<Loan> data) {
+            _viewData.Set(data);
+            _viewData.ApplyChanges();
+            return View(nameof(Index), _viewData);
+        }
+
+        [HttpGet]
+        public ActionResult DropFilters() {
+            _viewData.ClearFilters();
+            return RedirectToAction(nameof(Index));
         }
     }
 }

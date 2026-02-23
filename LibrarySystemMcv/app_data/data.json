@@ -15,6 +15,22 @@
       "Year": 2000,
       "Quantity": 334,
       "Available": true
+    },
+    {
+      "Id": 6,
+      "Title": "Моя книга",
+      "Author": "Автор",
+      "Year": 1992,
+      "Quantity": 200,
+      "Available": true
+    },
+    {
+      "Id": 7,
+      "Title": "Война и мир",
+      "Author": "Л. Н. Толстой",
+      "Year": 1886,
+      "Quantity": 1000,
+      "Available": false
     }
   ],
   "Readers": [

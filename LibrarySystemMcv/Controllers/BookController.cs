@@ -12,16 +12,15 @@ using System.Web.Mvc;
 namespace LibrarySystemMcv.Controllers
 {
     public class BookController : BaseController {
-        private static ViewData<Book> _viewData;
+        private static ViewData<Book> _viewData = new ViewData<Book>();
 
         public BookController(): base() {
-            _viewData = new ViewData<Book>();
             _viewData.TryInit(() => Context.Books.ToList());
-            _viewData.Update();
+            _viewData.UpdateData();
         }
 
         public ActionResult Index() {
-            _viewData.Update();
+            _viewData.UpdateData();
             return View(_viewData);
         }
 
@@ -77,7 +76,7 @@ namespace LibrarySystemMcv.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult ApplyFilters(ViewData<Book> data) {
-            _viewData.SearchSubstring = data.SearchSubstring;
+            _viewData.Set(data);
             _viewData.ApplyChanges();
             return View(nameof(Index), _viewData);
         }
